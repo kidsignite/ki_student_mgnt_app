@@ -526,7 +526,9 @@ $scope.rating = rate[count].rate;
 
 $scope.show = false;
   // verifyQRCode("y8y89y9");
-  verifyQRCode("2");
+  $scope.barcodeVal = 4242243;
+
+  verifyQRCode($scope.barcodeVal);
 
   document.addEventListener("deviceready", function () {
     //openBarcodeScanner();
@@ -556,8 +558,31 @@ $scope.show = false;
 
         var data  = response.data.data;
         $scope.studentsdata = data;
-         $scope.test = function(modVal){
+
+         $scope.addQrCodetoStudent = function(modVal){
+
+          $ionicLoading.show({
+            content: 'Loading',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0
+          });
+
           console.log(modVal);
+
+ 
+          var requrl = "https://script.google.com/macros/s/AKfycbwym9Io9DP7VJHlcypXa8bJ-5DhfXr-DzrvMszDkVr548a_bqkW/exec?qrcode="+ $scope.barcodeVal +"&regno="+modVal.reg_no;
+
+          $http.get(requrl)
+          .then(function(response) {
+              console.log(response);
+              $ionicLoading.hide();
+
+              $state.go('tabs.mainmenu');
+
+          });  
+
         }
     });
   }
@@ -567,7 +592,7 @@ $scope.show = false;
       .scan()
       .then(function(barcodeData) {
         alert(barcodeData.text);
-        
+        $scope.barcodeVal = barcodeData.text;
         // Success! Barcode data is here
       }, function(error) {
         // An error occurred

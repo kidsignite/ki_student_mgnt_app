@@ -15,7 +15,7 @@
 <div ng-show="show">
       <div class="row">
         <div class="col">
-            <button class="button button-block button-outline button-assertive" ng-click="test(tt)">
+            <button class="button button-block button-outline button-assertive" ng-click="addQrCodetoStudent(student)">
             Add Student Barcode
 </button>
 
@@ -24,7 +24,7 @@
 <div class="row">
         <div class="col">
         {{tt}}
-      <ion-select label="Select Student Registration Number" label-field="reg_no" provider="studentsdata"  ng-model="tt"/>
+      <ion-select label="Select Student Registration Number" label-field="reg_no" provider="studentsdata"  ng-model="student"/>
 
          </div>
       </div>
