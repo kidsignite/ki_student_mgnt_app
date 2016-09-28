@@ -190,11 +190,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
         }
       }
     })
-    .state('tabs.facts', {
-      url: "/facts",
+    .state('tabs.studentdetails', {
+      url: "/studentdetails",
       views: {
         'home-tab': {
-          templateUrl: "templates/facts.html"
+          templateUrl: "templates/studentdetails.html"
         }
       }
     })
@@ -279,95 +279,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 })
 
+.service('apiService', function() {
+  var apiService = this;
+  apiService.sharedObject = {};
+
+  apiService.getStudentInfo = function(){
+     return apiService.sharedObject;
+  }
+
+  apiService.setStudentInfo = function(value){
+     apiService.sharedObject = value;
+  }
+})
+
 .controller('HomeTabCtrl', function($scope) {
   console.log('HomeTabCtrl');
 })
 
-.controller('BarcodeCtrl', function($scope, $cordovaBarcodeScanner, $http, $state, $ionicLoading) {
 
 
-                   
-  document.addEventListener("deviceready", function () {
-    //openBarcodeScanner();
-  }, false);
-
-  $scope.scanBarcode = function() {
-    openBarcodeScanner();
-   
-  };
-  
-  $scope.gotoSplash = function() {
-    $state.go("splash"); 
-  };
-
-
-   $scope.Questions = function() {
-     
-     $state.go('QA');
-    
-  };
-
-  function openBarcodeScanner(){
-    $cordovaBarcodeScanner
-      .scan()
-      .then(function(barcodeData) {
-        alert(barcodeData.text);
-        verifyQRCode(barcodeData.text);
-        // Success! Barcode data is here
-      }, function(error) {
-        // An error occurred
-      });
-
-    // NOTE: encoding not functioning yet
-    $cordovaBarcodeScanner
-      .encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.nytimes.com")
-      .then(function(success) {
-        // Success!
-      }, function(error) {
-        // An error occurred
-      });
-  }
-
-  //
-   function verifyQRCode(qrcode) {
-
-    $ionicLoading.show({
-      content: 'Loading',
-      animation: 'fade-in',
-      showBackdrop: true,
-      maxWidth: 200,
-      showDelay: 0
-    });
-
-    $http.get("https://script.google.com/macros/s/AKfycbwym9Io9DP7VJHlcypXa8bJ-5DhfXr-DzrvMszDkVr548a_bqkW/exec?qrcode="+qrcode, {})
-    .success(function (response) {
-
-                if (response.hasError) {
-                  console.log("Error")
-                } else {
-                  console.log("Success")
-
-                   $ionicLoading.hide();
-                 
-                   faq = response.infos;
-                   console.log(response.infos);
-                   $scope.APIresponse = response.infos;
-                   console.log(response);
-                  
-                  
-                }
-
-            })
-    .error(function (response) {
-              console.log("Response error")
-              console.log(response)
-               
-            });
-   };
-
-})
-
-.controller('qaCtrl', function($scope, $http,$state) {
+ .controller('qaCtrl', function($scope, $http,$state) {
  $scope.rate = {};
  $scope.result = arr[count];
  var date = new Date(); 
@@ -511,9 +442,9 @@ $scope.rate.value = rate[count].rate;
  
 })
 
-.controller('BarcodeCtrl', function($scope, $cordovaBarcodeScanner, $http, $state, $ionicLoading) {
+.controller('BarcodeCtrl', function($scope, $cordovaBarcodeScanner, $http, $state, $ionicLoading, apiService) {
 
-    $scope.APIresponse = localStorage.getItem("obj");
+    $scope.APIresponse = apiService.getStudentInfo();
 
 
       // verifyQRCode(2);
@@ -546,12 +477,22 @@ $scope.rate.value = rate[count].rate;
 
 })
 
-.controller('studentCheckCtrl', function($scope, $http,$state, $cordovaBarcodeScanner, $ionicLoading) {
+.controller('StudentDetailsCtrl', function($scope, $cordovaBarcodeScanner, $http, $state, $ionicLoading, apiService) {
+
+    $scope.APIresponse = apiService.getStudentInfo();
+
+
+})
+
+.controller('studentCheckCtrl', function($scope, $http,$state, $cordovaBarcodeScanner, $ionicLoading, apiService) {
 
 $scope.show = false;
   // verifyQRCode("y8y89y9");
-  verifyQRCode("3");
+ 
+  $scope.barcodeVal = 4242243;
 
+  verifyQRCode($scope.barcodeVal);
+ 
   document.addEventListener("deviceready", function () {
     //openBarcodeScanner();
   }, false);
@@ -580,8 +521,31 @@ $scope.show = false;
 
         var data  = response.data.data;
         $scope.studentsdata = data;
-         $scope.test = function(modVal){
+
+         $scope.addQrCodetoStudent = function(modVal){
+
+          $ionicLoading.show({
+            content: 'Loading',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0
+          });
+
           console.log(modVal);
+
+ 
+          var requrl = "https://script.google.com/macros/s/AKfycbwym9Io9DP7VJHlcypXa8bJ-5DhfXr-DzrvMszDkVr548a_bqkW/exec?qrcode="+ $scope.barcodeVal +"&regno="+modVal.reg_no;
+
+          $http.get(requrl)
+          .then(function(response) {
+              console.log(response);
+              $ionicLoading.hide();
+
+              $state.go('tabs.mainmenu');
+
+          });  
+
         }
     });
   }
@@ -591,7 +555,7 @@ $scope.show = false;
       .scan()
       .then(function(barcodeData) {
         alert(barcodeData.text);
-        
+        $scope.barcodeVal = barcodeData.text;
         // Success! Barcode data is here
       }, function(error) {
         // An error occurred
@@ -634,7 +598,9 @@ $scope.show = false;
                    console.log(response);
                   
                     if($scope.APIresponse.length!=0){
-                      localStorage.setItem("obj", $scope.APIresponse);
+                      
+                      apiService.setStudentInfo($scope.APIresponse);
+
                       $state.go('tabs.mainmenu');
                     }else if($scope.APIresponse.length==0){
                       $scope.show = true;
