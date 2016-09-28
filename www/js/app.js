@@ -84,6 +84,7 @@ var count = 0 ;
 var arr;
 var rate = [];
 var rating;
+var id = 0;
 
 angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSelect'])
 
@@ -367,21 +368,28 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 })
 
 .controller('qaCtrl', function($scope, $http,$state) {
- $scope.rating = {};
-
-  $scope.result = arr[count];
+ $scope.rate = {};
+ $scope.result = arr[count];
+ var date = new Date(); 
+ var student = 0;
+ var Week = 0; 
+ 
   
+
+
   $scope.check = function() {
-  rating  = $scope.rating;
+  rating  = $scope.rate.value;
+  
+
    
               if(rate.length == 0){
               if(rate[count]== undefined ){
-        
-        rate.push({question:arr[count],rate :rating});
-        $scope.rating = 0;
-         console.log("count : " + count  +"rate : " +rate.length);
-
+       
+        id = arr[count].question_id;
+        rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week : Week});
+        $scope.rate.value = 0;
         count = count +1 ;
+       
         
         $scope.result = arr[count];
 
@@ -390,8 +398,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               } else{ 
                  
          rate[count].rate = rating ;
-         console.log("ok r" +rate[count]);
+        
          count = count +1 ;
+         id = arr[count].question_id;
+         
                     $scope.result = arr[count];
        
 
@@ -400,13 +410,37 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
     }
               else{
                  if(rate[count]== undefined ){
-                rate.push({question:arr[count],rate :rating});
-                $scope.rating = 0;
+                id = arr[count].question_id;
+                rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week:Week});
+                $scope.rate.value = 0;
+                 
                 count = count +1 ;
-               console.log("count : " + count+"rate : " +rate.length);
+               
+                
                if(count>arr.length-1){
-                console.log("big");
-                 $state.go('submit');
+                console.log("done");
+
+                //post request 
+
+
+
+var request = {
+   method: 'POST',
+   contentType:'application/json',
+   url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +rate,
+   headers: {'Content-Type': undefined},
+   //data: { test: 'test' }
+};
+
+$http(request).then(function(response) {
+  console.log(response);
+}, function(error) {
+  alert("error");
+});
+
+
+
+               
 
               } else{
               $scope.result = arr[count];
@@ -419,6 +453,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
                    rate[count].rate = rating ;
                    console.log("ok r" +rate[count]);
                    count = count +1 ;
+                   
                     $scope.result = arr[count];
                  }
             
@@ -429,9 +464,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
             
 
 
-       
+  console.log(rate);     
 
-  console.log(rate);
+  
         
       
 
@@ -450,13 +485,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
               } else{
                  count = count -1 ;
-                 $scope.rating = 0;
+                 $scope.rate.value = 0;
               if(count == -1 ){
                   alert("There is no");
               }else{
 
 console.log(rate[count]);
-$scope.rating = rate[count].rate;
+$scope.rate.value = rate[count].rate;
                 
               }
              
@@ -472,6 +507,7 @@ $scope.rating = rate[count].rate;
 
   };
   
+  
  
 })
 
@@ -483,26 +519,14 @@ $scope.rating = rate[count].rate;
       // verifyQRCode(2);
 
        if(!arr){
-           $http.get("https://script.google.com/macros/s/AKfycbwym9Io9DP7VJHlcypXa8bJ-5DhfXr-DzrvMszDkVr548a_bqkW/exec?qrcode="+1, {})
+           $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
     .success(function (response) {
                 if (response.hasError) {
                   console.log("Error")
                 } else {
                   console.log("Success")
-                 arr = [
-                    {
-                      "question_text" : "What is your name?"
-                    },
-                    {
-                      "question_text" : "What is your age?"
-                    },
-                    {
-                      "question_text" : "What is your height?"
-                    },
-                    {
-                      "question_text" : "What is your sex?"
-                    }
-                  ];
+                  console.log(response.data)
+                 arr = response.data;
                
               
                 }
@@ -526,7 +550,7 @@ $scope.rating = rate[count].rate;
 
 $scope.show = false;
   // verifyQRCode("y8y89y9");
-  verifyQRCode("2");
+  verifyQRCode("3");
 
   document.addEventListener("deviceready", function () {
     //openBarcodeScanner();
