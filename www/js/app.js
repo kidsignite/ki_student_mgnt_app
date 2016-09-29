@@ -104,7 +104,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  $ionicConfigProvider.backButton.text('Go Back').icon('ion-chevron-left');
+  $ionicConfigProvider.navBar.alignTitle("center"); //Places them at the bottom for all OS
+  $ionicConfigProvider.tabs.position("bottom"); //Places them at the bottom for all OS
+  $ionicConfigProvider.tabs.style("standard"); //Makes them all look the same across all OS
+
   $stateProvider
 
   //   .state('app', {
@@ -186,7 +191,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
       views: {
         'home-tab': {
           templateUrl: "templates/home.html",
-          controller: 'HomeTabCtrl'
+          controller: 'studentCheckCtrl'
         }
       }
     })
@@ -490,13 +495,15 @@ console.log("rate  set = "+rate[count].rating);
 $scope.show = false;
   // verifyQRCode("y8y89y9");
  
-  $scope.barcodeVal = 4242243;
+  // $scope.barcodeVal = 4242243;
 
-  verifyQRCode($scope.barcodeVal);
+  // verifyQRCode($scope.barcodeVal);
+
+  openBarcodeScanner();
  
-  document.addEventListener("deviceready", function () {
-    //openBarcodeScanner();
-  }, false);
+  // document.addEventListener("deviceready", function () {
+  //   openBarcodeScanner();
+  // }, false);
 
  $scope.test = function(modVal){
           console.log(modVal);
@@ -557,6 +564,7 @@ $scope.show = false;
       .then(function(barcodeData) {
         alert(barcodeData.text);
         $scope.barcodeVal = barcodeData.text;
+        verifyQRCode($scope.barcodeVal);
         // Success! Barcode data is here
       }, function(error) {
         // An error occurred
