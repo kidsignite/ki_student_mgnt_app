@@ -498,11 +498,10 @@ $scope.show = false;
 
   // verifyQRCode($scope.barcodeVal);
 
-  openBarcodeScanner();
  
-  // document.addEventListener("deviceready", function () {
-  //   openBarcodeScanner();
-  // }, false);
+  document.addEventListener("deviceready", function () {
+    openBarcodeScanner();
+  }, false);
 
  $scope.test = function(modVal){
           console.log(modVal);
