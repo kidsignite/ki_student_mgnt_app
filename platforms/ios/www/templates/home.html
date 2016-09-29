@@ -6,49 +6,36 @@
         </ion-content>
       </ion-view>
  -->
-    <ion-view view-title="Home">
+    <ion-view view-title="Home" ng-controller="studentCheckCtrl">
   <ion-content>
 
+<br><br>
     <center>
-        <div class="row" style="margin-top: 30px;">
-	        <div class="col">
-	        	<h2>Add New</h2>
-	        </div>
-        </div>
+       
+<div ng-show="show">
+      <div class="row">
+        <div class="col">
+            <button class="button button-block button-outline button-assertive" ng-click="addQrCodetoStudent(student)">
+            Add Student Barcode
+</button>
 
-    	<div class="row" style="margin-top: 10px;margin-bottom: 60px;">
-	     	<div class="col">
-	     		<a style="text-decoration: none;" href="#/tab/facts">
-	     			<img style=" width: 153px;" src="https://cdn1.iconfinder.com/data/icons/ecommerce-free/96/Certificate-512.png">
-	     		<h3>Invoice</h3>
-	     		</a>
+  </div>
+      </div>
+<div class="row">
+        <div class="col">
+        {{tt}}
+      <ion-select label="Select Student Registration Number" label-field="reg_no" provider="studentsdata"  ng-model="student"/>
 
-	     	</div>
-	     	<div class="col">
-          <a style="text-decoration: none;" href="#/tab/addClient">
-            <img style=" width: 153px;" src="https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png">
-          <h3>Client</h3>
+         </div>
+      </div>
 
-	     		</a>
-	     	</div>
-	  	</div>
- 	  	<div class="row">
-	     	<div class="col">
-          <a style="text-decoration: none;" href="#/tab/addProduce">
 
-	     		<img style=" width: 153px;" src="https://cdn1.iconfinder.com/data/icons/office-vol-5-2/128/office-13-512.png">
-	     		<h3>Produce</h3>
-          </a>
-	     	</div>
-	     	<div class="col">
-	     		<img style=" width: 153px;" src="https://cdn3.iconfinder.com/data/icons/luchesa-vol-9/128/Report-512.png">
-	     		<h3>Reports</h3>
-	     	</div>
-	  	</div>
+</div>
+
     </center>
   </ion-content>
  
-  <ion-tabs class="tabs-positive tabs-icon-top">
+  <!-- <ion-tabs class="tabs-positive tabs-icon-top">
 
   <ion-tab title="Home" icon-on="ion-ios-home" icon-off="ion-ios-home-outline">
    </ion-tab>
@@ -66,7 +53,7 @@
    </ion-tab>
 
 
-</ion-tabs>
+</ion-tabs> -->
 
 
 
