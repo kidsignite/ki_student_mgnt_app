@@ -422,7 +422,8 @@ $http(request).then(function(response) {
               }else{
 
 console.log(rate[count]);
-$scope.rate.value = rate[count].rate;
+$scope.rate.value = rate[count].rating;
+console.log("rate  set = "+rate[count].rating);
                 
               }
              
