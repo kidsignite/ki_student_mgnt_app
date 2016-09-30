@@ -12,13 +12,13 @@
 
           <div class="row">
             <div class="col">
-                <div ng-repeat="user in APIresponse">
-                age :{{user.Age}}<br/>
-                 Email :{{user.Email}}<br/>
-                  Phone :{{user.Phone}}<br/>
-                  Parent :{{user.Parent}}<br/>
-                  Name : {{user.Childs_Name}}<br/>
-                  Registration : {{user.Registration_No}}<br/>
+                <div>
+                  Name : {{APIresponse.Childs_Name}}<br/>
+                  Registration : {{APIresponse.Registration_No}}<br/>
+                  Age :{{APIresponse.Age}}<br/>
+                  Parent :{{APIresponse.Parent}}<br/>
+                  Phone :{{APIresponse.Phone}}<br/>
+                  Email :{{APIresponse.Email}}<br/>
               </div>
             </div>
           </div>
