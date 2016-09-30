@@ -85,6 +85,7 @@ var arr;
 var rate = [];
 var rating;
 var id = 0;
+var status = 1 ; 
 
 angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSelect'])
 
@@ -273,6 +274,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
           templateUrl: "templates/ClientsMain.html"
         }
       }
+    })
+    .state('tabs.submit', {
+      url: "/clientmenu",
+      views: {
+        'contact-tab': {
+          templateUrl: "templates/submit.html"
+        }
+      }
     });
 
 
@@ -304,7 +313,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 
 
- .controller('qaCtrl', function($scope, $http,$state) {
+ .controller('qaCtrl', function($scope, $http,$state,$ionicLoading) {
  $scope.rate = {};
  $scope.result = arr[count];
  var date = new Date(); 
@@ -314,13 +323,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
   
 
 
-  $scope.check = function() {
+  $scope.check = function() { 
   rating  = $scope.rate.value;
-  
-
-     
-              if(rate.length == 0){
-              if(rate[count]== undefined ){
+  if(rate.length == 0){
+              if(rate[count]== undefined && status == 0  ){
        
         id = arr[count].question_id;
         rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week : Week});
@@ -333,7 +339,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               
 
               } else{ 
-                 
+              if(rate[count]== undefined ){
+              console.log("there is no more question to edit ");
+  
+        //send post after editing again
+
+
+
+
+
+       } else  {
          rate[count].rate = rating ;
         
          count = count +1 ;
@@ -341,12 +356,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
          
                     $scope.result = arr[count];
        
-
+}
 }  
       
     }
               else{
-                 if(rate[count]== undefined ){
+                 if(rate[count]== undefined && status == 0 ){
                 id = arr[count].question_id;
                 rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week:Week});
                 $scope.rate.value = 0;
@@ -358,9 +373,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
                 console.log("done");
 
                 //post request 
-
-
-
+$ionicLoading.hide();
 var request = {
    method: 'POST',
    contentType:'application/json',
@@ -370,9 +383,17 @@ var request = {
 };
 
 $http(request).then(function(response) {
+  
   console.log(response);
 }, function(error) {
+
   alert("error");
+ count = 0 ;
+ status = 2;
+ id = 0;
+ console.log("empty stat: "+ status  );
+  $state.go('tabs.mainmenu');
+
 });
 
 
@@ -387,19 +408,21 @@ $http(request).then(function(response) {
                  }
 
                  else{
+                   if(rate[count]== undefined ){
+ console.log("there is no more question to edit ");
+              
+       } else  {
                    rate[count].rate = rating ;
                    console.log("ok r" +rate[count]);
                    count = count +1 ;
                    
                     $scope.result = arr[count];
+                  }
                  }
             
                
               
               }
-              
-            
-
 
   console.log(rate);     
 
@@ -410,26 +433,30 @@ $http(request).then(function(response) {
   };
 
   $scope.back = function() {
-
+       $scope.state = 0 ;
              if(count<0){
-                console.log("low");
+                console.log("finished");
               } else{
                   if(rate.length == 0){
         $scope.result = arr[count];
+
                   }else{
                  count = count -1 ;
                  $scope.rate.value = 0;
               if(count == -1 ){
-                  alert("There is no");
+                  count=  count +1  ;
+                  alert("You have reached end of the questions ! ");
+
               }else{
 
 console.log(rate[count]);
 $scope.rate.value = rate[count].rating;
 console.log("rate  set = "+rate[count].rating);
-                
+   $scope.result = arr[count];              
               }
              }
-              $scope.result = arr[count];
+             
+             
               }  
  // console.log(rate);
    console.log(count);     
@@ -447,8 +474,22 @@ console.log("rate  set = "+rate[count].rating);
 
 
       // verifyQRCode(2);
+$scope.ins = function() {
+         
+   if (arr && status == 2){
+    
+      $state.go('tabs.submit');
 
-       if(!arr){
+
+    }  else{
+  $state.go('tabs.instructorFeedback');
+
+
+    } 
+
+  };
+if(!arr){
+      console.log("came");
            $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
     .success(function (response) {
                 if (response.hasError) {
@@ -457,7 +498,8 @@ console.log("rate  set = "+rate[count].rating);
                   console.log("Success")
                   console.log(response.data)
                  arr = response.data;
-               
+               status = 0 ;
+               console.log(status);
               
                 }
 
@@ -489,9 +531,9 @@ console.log("rate  set = "+rate[count].rating);
 $scope.show = false;
   // verifyQRCode("y8y89y9");
  
-  // $scope.barcodeVal = 422313002342422442243;
+  $scope.barcodeVal = 12;
 
-  // verifyQRCode($scope.barcodeVal);
+  verifyQRCode($scope.barcodeVal);
 
  
   document.addEventListener("deviceready", function () {
