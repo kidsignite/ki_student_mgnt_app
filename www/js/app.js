@@ -317,7 +317,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
   rating  = $scope.rate.value;
   
 
-   
+     
               if(rate.length == 0){
               if(rate[count]== undefined ){
        
@@ -410,16 +410,12 @@ $http(request).then(function(response) {
 
   $scope.back = function() {
 
-              if(rate.length == 0){
-        $scope.result = arr[count];
-                  }
-              else{
-               if(count<0){
+             if(count<0){
                 console.log("low");
-               
-
-
               } else{
+                  if(rate.length == 0){
+        $scope.result = arr[count];
+                  }else{
                  count = count -1 ;
                  $scope.rate.value = 0;
               if(count == -1 ){
@@ -431,13 +427,9 @@ $scope.rate.value = rate[count].rating;
 console.log("rate  set = "+rate[count].rating);
                 
               }
-             
+             }
               $scope.result = arr[count];
-              }
-               
-              
-              }
-              
+              }  
  // console.log(rate);
    console.log(count);     
       
