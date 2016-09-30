@@ -445,6 +445,7 @@ $http(request).then(function(response) {
                  $scope.rate.value = 0;
               if(count == -1 ){
                   count=  count +1  ;
+                  $scope.rate.value = rate[count].rating;
                   alert("You have reached end of the questions ! ");
 
               }else{
