@@ -190,9 +190,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
       url: "/home",
       views: {
         'home-tab': {
-          templateUrl: "templates/home.html",
-          controller: 'studentCheckCtrl'
-        }
+          templateUrl: "templates/home.html"
+       }
       }
     })
     .state('tabs.studentdetails', {
@@ -427,7 +426,8 @@ $http(request).then(function(response) {
               }else{
 
 console.log(rate[count]);
-$scope.rate.value = rate[count].rate;
+$scope.rate.value = rate[count].rating;
+console.log("rate  set = "+rate[count].rating);
                 
               }
              
@@ -494,21 +494,21 @@ $scope.rate.value = rate[count].rate;
 $scope.show = false;
   // verifyQRCode("y8y89y9");
  
-  // $scope.barcodeVal = 4242243;
+  // $scope.barcodeVal = 422322442243;
 
   // verifyQRCode($scope.barcodeVal);
 
-  openBarcodeScanner();
  
-  // document.addEventListener("deviceready", function () {
-  //   openBarcodeScanner();
-  // }, false);
+  document.addEventListener("deviceready", function () {
+    openBarcodeScanner();
+  }, false);
 
  $scope.test = function(modVal){
           console.log(modVal);
         }
 
-  function loadStudentInformation(){
+  $scope.loadStudentInformation = function(){
+    // alert("load Student info");
 
     $ionicLoading.show({
       content: 'Loading',
@@ -531,6 +531,10 @@ $scope.show = false;
 
          $scope.addQrCodetoStudent = function(modVal){
 
+          apiService.setStudentInfo(modVal);
+
+
+          // alert("button pressed " + modVal);
           $ionicLoading.show({
             content: 'Loading',
             animation: 'fade-in',
@@ -561,7 +565,7 @@ $scope.show = false;
     $cordovaBarcodeScanner
       .scan()
       .then(function(barcodeData) {
-        alert(barcodeData.text);
+        // alert(barcodeData.text);
         $scope.barcodeVal = barcodeData.text;
         verifyQRCode($scope.barcodeVal);
         // Success! Barcode data is here
@@ -581,6 +585,8 @@ $scope.show = false;
   }
 
   function verifyQRCode(qrcode) {
+
+    // alert("verifyQRCode");
 
     $ionicLoading.show({
       content: 'Loading',
@@ -612,8 +618,10 @@ $scope.show = false;
                       $state.go('tabs.mainmenu');
                     }else if($scope.APIresponse.length==0){
                       $scope.show = true;
+                      // alert($scope.show);
 
-                      loadStudentInformation();
+                  
+                      $scope.loadStudentInformation();
                     }
                 }
 

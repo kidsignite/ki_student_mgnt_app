@@ -12,7 +12,7 @@
 <br><br>
     <center>
        
-<div ng-show="show">
+<!-- <div ng-show="show"> -->
       <div class="row">
         <div class="col">
             <button class="button button-block button-outline button-assertive" ng-click="addQrCodetoStudent(student)">
@@ -23,14 +23,19 @@
       </div>
 <div class="row">
         <div class="col">
-        {{tt}}
-      <ion-select label="Select Student Registration Number" label-field="reg_no" provider="studentsdata"  ng-model="student"/>
+<p>{{studentsdata}}</p>
+         </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+      <ion-select label="Select Student Registration Number" label-field="Registration_No" provider="studentsdata"  ng-model="student"/>
 
          </div>
       </div>
 
 
-</div>
+<!-- </div> -->
 
     </center>
   </ion-content>
