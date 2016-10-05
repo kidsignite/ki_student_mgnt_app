@@ -86,7 +86,7 @@ var rate = [];
 var rating;
 var id = 0;
 
-angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSelect'])
+angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSelect', 'ionic-ratings'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -287,6 +287,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
   var apiService = this;
   apiService.sharedObject = {};
 
+  apiService.questionsObject = {};
+
   apiService.getStudentInfo = function(){
      return apiService.sharedObject;
   }
@@ -296,6 +298,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
     apiService.sharedObject = value;
   }
+
+  apiService.getQuestionsInfo = function(){
+     return apiService.questionsObject;
+  }
+
+  apiService.setQuestionsInfo = function(value){
+    apiService.questionsObject = {};
+
+    apiService.questionsObject = value;
+  }
 })
 
 .controller('HomeTabCtrl', function($scope) {
@@ -304,146 +316,235 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 
 
- .controller('qaCtrl', function($scope, $http,$state) {
- $scope.rate = {};
- $scope.result = arr[count];
- var date = new Date(); 
- var student = 0;
- var Week = 0; 
+ .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout) {
+
+
+    $scope.questionIndex=0;
+    $scope.questionList = apiService.getQuestionsInfo();
+
+    $scope.student = apiService.getStudentInfo();
+
+    console.log($scope.questionList);
+    console.log($scope.questionList[$scope.questionIndex].question);
+
+
+    var resultArr = [];
+
+    for(var x = 0; x< $scope.questionList.length; x++){
+      var obj = {
+        "question_id" : $scope.questionList[x].question_id,
+        "question" : $scope.questionList[x].question,
+        "rating" : 0,
+        "student_reg_no" : $scope.student.Registration_No,
+        "date" : "01/11/2012",
+        "week" : 1
+      };
+
+      resultArr.push(obj);
+    }
+
+    console.log(resultArr);
+
+
+      $scope.ratingsObject = {
+        iconOn: 'ion-ios-star',    //Optional
+        iconOff: 'ion-ios-star-outline',   //Optional
+        iconOnColor: 'rgb(200, 200, 100)',  //Optional
+        iconOffColor:  'rgb(200, 100, 100)',    //Optional
+        rating:  0, //Optional
+        minRating:0,    //Optional
+        readOnly: true, //Optional
+        callback: function(rating, index) {    //Mandatory
+          $scope.ratingsCallback(rating, index);
+        }
+      };
+
+      $scope.ratingsCallback = function(rating, index) {
+        console.log('Selected rating is : ', rating, ' and the index is : ', index);
+
+
+        resultArr[index].rating = rating;
+
+
+        // if($scope.questionIndex!=(resultArr.length-1)){
+        //   $scope.questionIndex= $scope.questionIndex+1;
+        // }else{
+        //   alert("Submit");
+        // }
+        
+      };
+
+      $scope.submitFunc = function(){
+          var flag = false;
+
+          console.log(resultArr);
+
+          for(var x = 0; x< resultArr.length; x++){
+            if(resultArr[x].rating==0){
+               flag = true;
+               var alertPopup = $ionicPopup.alert({
+                 title: 'Error!',
+                 template: 'Select a rating for all!'
+               });
+
+               alertPopup.then(function(res) {
+                 console.log('Done');
+               });
+
+              break;
+            }
+          }
+
+          if (!flag) {
+            alert("Submitted");
+          }
+
+      }
+
+
+
+
+
+
+//  $scope.rate = {};
+//  $scope.result = arr[count];
+//  var date = new Date(); 
+//  var student = 0;
+//  var Week = 0; 
  
   
 
 
-  $scope.check = function() {
-  rating  = $scope.rate.value;
+//   $scope.check = function() {
+//   rating  = $scope.rate.value;
   
 
    
-              if(rate.length == 0){
-              if(rate[count]== undefined ){
+//               if(rate.length == 0){
+//               if(rate[count]== undefined ){
        
-        id = arr[count].question_id;
-        rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week : Week});
-        $scope.rate.value = 0;
-        count = count +1 ;
+//         id = arr[count].question_id;
+//         rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week : Week});
+//         $scope.rate.value = 0;
+//         count = count +1 ;
        
         
-        $scope.result = arr[count];
+//         $scope.result = arr[count];
 
               
 
-              } else{ 
+//               } else{ 
                  
-         rate[count].rate = rating ;
+//          rate[count].rate = rating ;
         
-         count = count +1 ;
-         id = arr[count].question_id;
+//          count = count +1 ;
+//          id = arr[count].question_id;
          
-                    $scope.result = arr[count];
+//                     $scope.result = arr[count];
        
 
-}  
+// }  
       
-    }
-              else{
-                 if(rate[count]== undefined ){
-                id = arr[count].question_id;
-                rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week:Week});
-                $scope.rate.value = 0;
+//     }
+//               else{
+//                  if(rate[count]== undefined ){
+//                 id = arr[count].question_id;
+//                 rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week:Week});
+//                 $scope.rate.value = 0;
                  
-                count = count +1 ;
+//                 count = count +1 ;
                
                 
-               if(count>arr.length-1){
-                console.log("done");
+//                if(count>arr.length-1){
+//                 console.log("done");
 
-                //post request 
+//                 //post request 
 
 
 
-var request = {
-   method: 'POST',
-   contentType:'application/json',
-   url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +rate,
-   headers: {'Content-Type': undefined},
-   //data: { test: 'test' }
-};
+// var request = {
+//    method: 'POST',
+//    contentType:'application/json',
+//    url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +rate,
+//    headers: {'Content-Type': undefined},
+//    //data: { test: 'test' }
+// };
 
-$http(request).then(function(response) {
-  console.log(response);
-}, function(error) {
-  alert("error");
-});
+// $http(request).then(function(response) {
+//   console.log(response);
+// }, function(error) {
+//   alert("error");
+// });
 
 
 
                
 
-              } else{
-              $scope.result = arr[count];
-              }
+//               } else{
+//               $scope.result = arr[count];
+//               }
 
 
-                 }
+//                  }
 
-                 else{
-                   rate[count].rate = rating ;
-                   console.log("ok r" +rate[count]);
-                   count = count +1 ;
+//                  else{
+//                    rate[count].rate = rating ;
+//                    console.log("ok r" +rate[count]);
+//                    count = count +1 ;
                    
-                    $scope.result = arr[count];
-                 }
+//                     $scope.result = arr[count];
+//                  }
             
                
               
-              }
+//               }
               
             
 
 
-  console.log(rate);     
+//   console.log(rate);     
 
   
         
       
 
-  };
+//   };
 
-  $scope.back = function() {
+//   $scope.back = function() {
 
-              if(rate.length == 0){
-        $scope.result = arr[count];
-                  }
-              else{
-               if(count<0){
-                console.log("low");
+//               if(rate.length == 0){
+//         $scope.result = arr[count];
+//                   }
+//               else{
+//                if(count<0){
+//                 console.log("low");
                
 
 
-              } else{
-                 count = count -1 ;
-                 $scope.rate.value = 0;
-              if(count == -1 ){
-                  alert("There is no");
-              }else{
+//               } else{
+//                  count = count -1 ;
+//                  $scope.rate.value = 0;
+//               if(count == -1 ){
+//                   alert("There is no");
+//               }else{
 
-console.log(rate[count]);
-$scope.rate.value = rate[count].rating;
-console.log("rate  set = "+rate[count].rating);
+// console.log(rate[count]);
+// $scope.rate.value = rate[count].rating;
+// console.log("rate  set = "+rate[count].rating);
                 
-              }
+//               }
              
-              $scope.result = arr[count];
-              }
+//               $scope.result = arr[count];
+//               }
                
               
-              }
+//               }
               
- // console.log(rate);
-   console.log(count);     
+//  // console.log(rate);
+//    console.log(count);     
       
 
-  };
+//   };
   
   
  
@@ -454,6 +555,14 @@ console.log("rate  set = "+rate[count].rating);
     $scope.APIresponse = apiService.getStudentInfo();
 
 
+       $ionicLoading.show({
+      content: 'Loading',
+      animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 0
+    });
+
       // verifyQRCode(2);
 
        if(!arr){
@@ -462,6 +571,8 @@ console.log("rate  set = "+rate[count].rating);
                 if (response.hasError) {
                   console.log("Error")
                 } else {
+                  apiService.setQuestionsInfo(response.data);
+                   $ionicLoading.hide();
                   console.log("Success")
                   console.log(response.data)
                  arr = response.data;
@@ -497,9 +608,9 @@ console.log("rate  set = "+rate[count].rating);
 $scope.show = false;
   // verifyQRCode("y8y89y9");
  
-  // $scope.barcodeVal = 422313002342422442243;
+  $scope.barcodeVal = 2;
 
-  // verifyQRCode($scope.barcodeVal);
+  verifyQRCode($scope.barcodeVal);
 
  
   document.addEventListener("deviceready", function () {
