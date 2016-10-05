@@ -85,6 +85,7 @@ var arr;
 var rate = [];
 var rating;
 var id = 0;
+var status = 1 ; 
 
 angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSelect', 'ionic-ratings'])
 
@@ -273,6 +274,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
           templateUrl: "templates/ClientsMain.html"
         }
       }
+    })
+    .state('tabs.submit', {
+      url: "/clientmenu",
+      views: {
+        'contact-tab': {
+          templateUrl: "templates/submit.html"
+        }
+      }
     });
 
 
@@ -316,7 +325,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 
 
- .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout) {
+  .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout) {
 
 
     $scope.questionIndex=0;
@@ -402,26 +411,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
       }
 
 
-
-
-
-
-//  $scope.rate = {};
-//  $scope.result = arr[count];
-//  var date = new Date(); 
-//  var student = 0;
-//  var Week = 0; 
  
-  
-
-
-//   $scope.check = function() {
+ //   $scope.check = function() {
 //   rating  = $scope.rate.value;
   
 
    
 //               if(rate.length == 0){
 //               if(rate[count]== undefined ){
+ 
        
 //         id = arr[count].question_id;
 //         rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week : Week});
@@ -433,16 +431,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
               
 
-//               } else{ 
+ //               } else{ 
                  
 //          rate[count].rate = rating ;
+ 
         
 //          count = count +1 ;
 //          id = arr[count].question_id;
          
 //                     $scope.result = arr[count];
        
-
+ 
 // }  
       
 //     }
@@ -451,6 +450,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 //                 id = arr[count].question_id;
 //                 rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week:Week});
 //                 $scope.rate.value = 0;
+ 
                  
 //                 count = count +1 ;
                
@@ -458,7 +458,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 //                if(count>arr.length-1){
 //                 console.log("done");
 
-//                 //post request 
+ //                 //post request 
 
 
 
@@ -475,7 +475,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 // }, function(error) {
 //   alert("error");
 // });
-
+ 
 
 
                
@@ -487,7 +487,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 //                  }
 
-//                  else{
+ //                  else{
 //                    rate[count].rate = rating ;
 //                    console.log("ok r" +rate[count]);
 //                    count = count +1 ;
@@ -501,6 +501,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               
             
 
+ 
 
 //   console.log(rate);     
 
@@ -510,7 +511,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 //   };
 
-//   $scope.back = function() {
+ //   $scope.back = function() {
 
 //               if(rate.length == 0){
 //         $scope.result = arr[count];
@@ -542,6 +543,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               
 //  // console.log(rate);
 //    console.log(count);     
+ 
       
 
 //   };
@@ -564,8 +566,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
     });
 
       // verifyQRCode(2);
+$scope.ins = function() {
+         
+   if (arr && status == 2){
+    
+      $state.go('tabs.submit');
 
-       if(!arr){
+
+    }  else{
+  $state.go('tabs.instructorFeedback');
+
+
+    } 
+
+  };
+if(!arr){
+      console.log("came");
            $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
     .success(function (response) {
                 if (response.hasError) {
@@ -576,7 +592,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
                   console.log("Success")
                   console.log(response.data)
                  arr = response.data;
-               
+               status = 0 ;
+               console.log(status);
               
                 }
 
@@ -608,7 +625,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 $scope.show = false;
   // verifyQRCode("y8y89y9");
  
-  $scope.barcodeVal = 2;
+  
+  $scope.barcodeVal = "N1548034";
 
   verifyQRCode($scope.barcodeVal);
 
