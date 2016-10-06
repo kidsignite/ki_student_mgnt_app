@@ -339,13 +339,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
     var resultArr = [];
 
+    //Getting the current Date
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    today = mm+'/'+dd+'/'+yyyy;
+
     for(var x = 0; x< $scope.questionList.length; x++){
       var obj = {
         "question_id" : $scope.questionList[x].question_id,
         "question" : $scope.questionList[x].question,
         "rating" : 0,
         "student_reg_no" : $scope.student.Registration_No,
-        "date" : "01/11/2012",
+        "date" : today,
         "week" : 1
       };
 
@@ -387,6 +403,25 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
           var flag = false;
 
           console.log(resultArr);
+
+          //Submitting Feedback Response
+          var request = {
+           method: 'POST',
+           contentType:'application/json',
+
+           /*url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +resultArr,*/
+           url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec',
+           headers: {'Content-Type': undefined},
+           data: resultArr
+          };
+
+        $http(request).then(function(response) {
+          console.log(response);
+          alert("There are " + response.data + " Questions");
+          //alert(response.data[1].date);
+        }, function(error) {
+          alert("error");
+        });
 
           for(var x = 0; x< resultArr.length; x++){
             if(resultArr[x].rating==0){
