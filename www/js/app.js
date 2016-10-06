@@ -325,7 +325,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 
 
-  .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout) {
+  .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout, $ionicLoading) {
 
 
     $scope.questionIndex=0;
@@ -404,24 +404,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
           console.log(resultArr);
 
-          //Submitting Feedback Response
-          var request = {
-           method: 'POST',
-           contentType:'application/json',
-
-           /*url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +resultArr,*/
-           url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec',
-           headers: {'Content-Type': undefined},
-           data: resultArr
-          };
-
-        $http(request).then(function(response) {
-          console.log(response);
-          alert("There are " + response.data + " Questions");
-          //alert(response.data[1].date);
-        }, function(error) {
-          alert("error");
-        });
+         
 
           for(var x = 0; x< resultArr.length; x++){
             if(resultArr[x].rating==0){
@@ -440,7 +423,44 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
           }
 
           if (!flag) {
-            alert("Submitted");
+
+            $ionicLoading.show({
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+            });
+
+            //Submitting Feedback Response
+            var request = {
+               method: 'POST',
+               contentType:'application/json',
+
+               /*url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +resultArr,*/
+               url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec',
+               headers: {'Content-Type': undefined},
+               data: resultArr
+              };
+
+            $http(request).then(function(response) {
+              console.log(response);
+              // alert("There are " + response.data + " Questions");
+              $ionicLoading.hide();
+
+              var alertPopup = $ionicPopup.alert({
+                 title: 'Success!',
+                 template: 'Feedback has been submitted!'
+               });
+
+               alertPopup.then(function(res) {
+                  $state.go('tabs.mainmenu');
+               });
+
+              //alert(response.data[1].date);
+            }, function(error) {
+              alert("error");
+            });
           }
 
       }
@@ -616,8 +636,7 @@ $scope.ins = function() {
 
   };
 if(!arr){
-      console.log("came");
-           $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
+            $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
     .success(function (response) {
                 if (response.hasError) {
                   console.log("Error")
