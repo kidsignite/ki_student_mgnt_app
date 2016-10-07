@@ -13,14 +13,28 @@
     <center>
        
 <!-- <div ng-show="show"> -->
-      <div class="row">
+<div ng-hide="showAddButton">
+
+<div class="row">
+<div class="col">
+
+</div>
+<div class="col">
+
+</div>
+<div class="col">
+</div>
         <div class="col">
-            <button class="button button-block button-outline button-assertive" ng-click="addQrCodetoStudent(student)">
-            Add Student Barcode
+            <button class="button button-block button-positive" ng-click="scanAnotherStudent()">
+             +
 </button>
 
   </div>
       </div>
+
+      
+
+
 <div class="row">
         <div class="col">
 <!-- <p>{{studentsdata}}</p>
@@ -29,11 +43,38 @@
 
       <div class="row">
         <div class="col">
-      <ion-select label="Select Student Registration Number" label-field="Registration_No" provider="studentsdata"  ng-model="student"/>
+            <h4>Select Registration Number </h4>
 
          </div>
       </div>
 
+      <div class="row">
+        <div class="col">
+      <ion-select  label-field="Registration_No" provider="studentsdata"  ng-model="student"/>
+
+         </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+            <button class="button button-block button-outline button-assertive" ng-click="addQrCodetoStudent(student)">
+            Add Student Barcode
+</button>
+
+  </div>
+      </div>
+</div>
+
+<div ng-show="showAddButton">
+  <div class="row">
+        <div class="col">
+            <button class="button button-block button-positive" ng-click="scanAnotherStudent()">
+            Scan Another +
+</button>
+
+  </div>
+      </div>
+</div>
 
 <!-- </div> -->
 
