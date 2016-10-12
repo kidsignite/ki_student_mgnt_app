@@ -355,8 +355,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
     today = mm+'/'+dd+'/'+yyyy;
 
-    for(var x = 0; x< $scope.questionList.length; x++){
-      var obj = {
+    for(var x = 0; x< $scope.questionList.length+1; x++){
+      if(x==$scope.questionList.length){
+        var obj = {
+        "question_id" : "comment",
+        "question" : "Hi there!",
+        "rating" : 0,
+        "student_reg_no" : $scope.student.Registration_No,
+        "date" : today,
+        "week" : 1
+      };
+
+      resultArr.push(obj);
+      }
+      else{
+        var obj = {
         "question_id" : $scope.questionList[x].question_id,
         "question" : $scope.questionList[x].question,
         "rating" : 0,
@@ -366,6 +379,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
       };
 
       resultArr.push(obj);
+      }
+      
     }
 
     console.log(resultArr);
@@ -399,16 +414,20 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
         
       };
 
-      $scope.submitFunc = function(){
+      $scope.submitFunc = function(comment){
           var flag = false;
 
           console.log(resultArr);
-
          
 
           for(var x = 0; x< resultArr.length; x++){
-            if(resultArr[x].rating==0){
-               flag = true;
+            if(resultArr[x].rating==0 ){
+              if(x==resultArr.length-1){
+                resultArr[x].question=comment;
+              }else{
+                if($scope.questionList[x].mandatory==1){
+
+                  flag = true;
                var alertPopup = $ionicPopup.alert({
                  title: 'Error!',
                  template: 'Select a rating for all!'
@@ -419,6 +438,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
                });
 
               break;
+                }
+                
+              }
+               
             }
           }
 
@@ -680,7 +703,7 @@ $scope.show = false;
   // verifyQRCode("y8y89y9");
  
   
-  $scope.barcodeVal = "N1548034";
+  $scope.barcodeVal = "12345";
 
   verifyQRCode($scope.barcodeVal);
 
