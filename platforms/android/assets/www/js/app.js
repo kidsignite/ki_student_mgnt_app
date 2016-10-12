@@ -85,6 +85,7 @@ var arr;
 var rate = [];
 var rating;
 var id = 0;
+var status = 1 ; 
 
 angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSelect', 'ionic-ratings'])
 
@@ -273,6 +274,14 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
           templateUrl: "templates/ClientsMain.html"
         }
       }
+    })
+    .state('tabs.submit', {
+      url: "/clientmenu",
+      views: {
+        'contact-tab': {
+          templateUrl: "templates/submit.html"
+        }
+      }
     });
 
 
@@ -316,7 +325,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 
 
- .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout) {
+  .controller('qaCtrl', function($scope, $http,$state, apiService,  $ionicPopup, $timeout, $ionicLoading) {
 
 
     $scope.questionIndex=0;
@@ -330,13 +339,29 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
     var resultArr = [];
 
+    //Getting the current Date
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    today = mm+'/'+dd+'/'+yyyy;
+
     for(var x = 0; x< $scope.questionList.length; x++){
       var obj = {
         "question_id" : $scope.questionList[x].question_id,
         "question" : $scope.questionList[x].question,
         "rating" : 0,
         "student_reg_no" : $scope.student.Registration_No,
-        "date" : "01/11/2012",
+        "date" : today,
         "week" : 1
       };
 
@@ -379,6 +404,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
           console.log(resultArr);
 
+         
+
           for(var x = 0; x< resultArr.length; x++){
             if(resultArr[x].rating==0){
                flag = true;
@@ -396,32 +423,58 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
           }
 
           if (!flag) {
-            alert("Submitted");
+
+            $ionicLoading.show({
+              content: 'Loading',
+              animation: 'fade-in',
+              showBackdrop: true,
+              maxWidth: 200,
+              showDelay: 0
+            });
+
+            //Submitting Feedback Response
+            var request = {
+               method: 'POST',
+               contentType:'application/json',
+
+               /*url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec?results=' +resultArr,*/
+               url: 'https://script.google.com/macros/s/AKfycbwHaGlRE6Lk_S2BnnQ6ed4oBloTOOeKJHBJLPaEcdEhQncCga_G/exec',
+               headers: {'Content-Type': undefined},
+               data: resultArr
+              };
+
+            $http(request).then(function(response) {
+              console.log(response);
+              // alert("There are " + response.data + " Questions");
+              $ionicLoading.hide();
+
+              var alertPopup = $ionicPopup.alert({
+                 title: 'Success!',
+                 template: 'Feedback has been submitted!'
+               });
+
+               alertPopup.then(function(res) {
+                  $state.go('tabs.mainmenu');
+               });
+
+              //alert(response.data[1].date);
+            }, function(error) {
+              alert("error");
+            });
           }
 
       }
 
 
-
-
-
-
-//  $scope.rate = {};
-//  $scope.result = arr[count];
-//  var date = new Date(); 
-//  var student = 0;
-//  var Week = 0; 
  
-  
-
-
-//   $scope.check = function() {
+ //   $scope.check = function() {
 //   rating  = $scope.rate.value;
   
 
    
 //               if(rate.length == 0){
 //               if(rate[count]== undefined ){
+ 
        
 //         id = arr[count].question_id;
 //         rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week : Week});
@@ -433,16 +486,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
               
 
-//               } else{ 
+ //               } else{ 
                  
 //          rate[count].rate = rating ;
+ 
         
 //          count = count +1 ;
 //          id = arr[count].question_id;
          
 //                     $scope.result = arr[count];
        
-
+ 
 // }  
       
 //     }
@@ -451,6 +505,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 //                 id = arr[count].question_id;
 //                 rate.push({question_id:id,question:arr[count],rating:rating,date:date,student_reg_no:student,week:Week});
 //                 $scope.rate.value = 0;
+ 
                  
 //                 count = count +1 ;
                
@@ -458,7 +513,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 //                if(count>arr.length-1){
 //                 console.log("done");
 
-//                 //post request 
+ //                 //post request 
 
 
 
@@ -475,7 +530,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 // }, function(error) {
 //   alert("error");
 // });
-
+ 
 
 
                
@@ -487,7 +542,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 //                  }
 
-//                  else{
+ //                  else{
 //                    rate[count].rate = rating ;
 //                    console.log("ok r" +rate[count]);
 //                    count = count +1 ;
@@ -501,6 +556,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               
             
 
+ 
 
 //   console.log(rate);     
 
@@ -510,7 +566,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 
 //   };
 
-//   $scope.back = function() {
+ //   $scope.back = function() {
 
 //               if(rate.length == 0){
 //         $scope.result = arr[count];
@@ -542,6 +598,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               
 //  // console.log(rate);
 //    console.log(count);     
+ 
       
 
 //   };
@@ -564,19 +621,36 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
     });
 
       // verifyQRCode(2);
+$scope.ins = function() {
+         
+   if (arr && status == 2){
+    
+      $state.go('tabs.submit');
 
-       if(!arr){
-           $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
+
+    }  else{
+  $state.go('tabs.instructorFeedback');
+
+
+    } 
+
+  };
+
+ 
+            $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
     .success(function (response) {
                 if (response.hasError) {
                   console.log("Error")
                 } else {
+                  $ionicLoading.hide();
+
                   apiService.setQuestionsInfo(response.data);
-                   $ionicLoading.hide();
-                  console.log("Success")
+                   
+                  console.log("Success2")
                   console.log(response.data)
-                 arr = response.data;
-               
+                   arr = response.data;
+                   status = 0 ;
+                   console.log(status);
               
                 }
 
@@ -586,7 +660,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
               console.log(response)
                
             });
-       }             
+                 
   
   
 
@@ -604,14 +678,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'ionicSe
 })
 
 .controller('studentCheckCtrl', function($scope, $http,$state, $cordovaBarcodeScanner, $ionicLoading, apiService) {
-
+$scope.showAddButton = false;
 $scope.show = false;
-  // verifyQRCode("y8y89y9");
  
-  $scope.barcodeVal = 2;
+  
+  // $scope.barcodeVal = "N1548034";
 
-  verifyQRCode($scope.barcodeVal);
+  // verifyQRCode($scope.barcodeVal);
 
+$scope.scanAnotherStudent = function(){
+  openBarcodeScanner();
+  $scope.showAddButton = false;
+}
  
   document.addEventListener("deviceready", function () {
     openBarcodeScanner();
@@ -647,6 +725,8 @@ $scope.show = false;
 
          $scope.addQrCodetoStudent = function(modVal){
 
+          $scope.showAddButton = true;
+
           apiService.setStudentInfo(modVal);
 
           console.log(modVal);
@@ -669,6 +749,7 @@ $scope.show = false;
           .then(function(response) {
               console.log(response);
               $ionicLoading.hide();
+
 
               $state.go('tabs.mainmenu');
 
@@ -731,10 +812,13 @@ $scope.show = false;
                     if($scope.APIresponse.length!=0){
                       
                       apiService.setStudentInfo($scope.APIresponse[0]);
-
+                      $scope.showAddButton = true;
                       $state.go('tabs.mainmenu');
+
                     }else if($scope.APIresponse.length==0){
                       $scope.show = true;
+                      $scope.showAddButton = false;
+
                       // alert($scope.show);
 
                   

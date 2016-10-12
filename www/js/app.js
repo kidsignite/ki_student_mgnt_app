@@ -658,19 +658,22 @@ $scope.ins = function() {
     } 
 
   };
-if(!arr){
+
+ 
             $http.get("https://script.google.com/macros/s/AKfycbwCBI06okNRN5Ms22i5Aj6Ej_gBi1NimtPKQ4M31y2eq8qyYEU/exec", {})
     .success(function (response) {
                 if (response.hasError) {
                   console.log("Error")
                 } else {
+                  $ionicLoading.hide();
+
                   apiService.setQuestionsInfo(response.data);
-                   $ionicLoading.hide();
-                  console.log("Success")
+                   
+                  console.log("Success2")
                   console.log(response.data)
-                 arr = response.data;
-               status = 0 ;
-               console.log(status);
+                   arr = response.data;
+                   status = 0 ;
+                   console.log(status);
               
                 }
 
@@ -680,7 +683,7 @@ if(!arr){
               console.log(response)
                
             });
-       }             
+                 
   
   
 
@@ -698,15 +701,19 @@ if(!arr){
 })
 
 .controller('studentCheckCtrl', function($scope, $http,$state, $cordovaBarcodeScanner, $ionicLoading, apiService) {
-
+$scope.showAddButton = false;
 $scope.show = false;
-  // verifyQRCode("y8y89y9");
  
   
-  $scope.barcodeVal = "12345";
+   $scope.barcodeVal = "12345";
+   // $scope.barcodeVal = "N1548034";
+ 
+   verifyQRCode($scope.barcodeVal);
 
-  verifyQRCode($scope.barcodeVal);
-
+$scope.scanAnotherStudent = function(){
+  openBarcodeScanner();
+  $scope.showAddButton = false;
+}
  
   document.addEventListener("deviceready", function () {
     openBarcodeScanner();
@@ -742,6 +749,8 @@ $scope.show = false;
 
          $scope.addQrCodetoStudent = function(modVal){
 
+          $scope.showAddButton = true;
+
           apiService.setStudentInfo(modVal);
 
           console.log(modVal);
@@ -764,6 +773,7 @@ $scope.show = false;
           .then(function(response) {
               console.log(response);
               $ionicLoading.hide();
+
 
               $state.go('tabs.mainmenu');
 
@@ -826,10 +836,13 @@ $scope.show = false;
                     if($scope.APIresponse.length!=0){
                       
                       apiService.setStudentInfo($scope.APIresponse[0]);
-
+                      $scope.showAddButton = true;
                       $state.go('tabs.mainmenu');
+
                     }else if($scope.APIresponse.length==0){
                       $scope.show = true;
+                      $scope.showAddButton = false;
+
                       // alert($scope.show);
 
                   
